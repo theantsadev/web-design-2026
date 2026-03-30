@@ -12,11 +12,10 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-install -j$(nproc) gd pdo pdo_mysql \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Définir le répertoire root d'Apache
-WORKDIR /var/www/html
+# Configurer Apache pour autoriser les overrides .htaccess
+RUN sed -i '/<Directory \/var\/www\/>/,/<\/Directory>/s/AllowOverride None/AllowOverride All/' /etc/apache2/apache2.conf
 
-# Copier la configuration Apache (si besoin)
-COPY .htaccess .
+WORKDIR /var/www/html
 
 EXPOSE 80
 

@@ -7,6 +7,7 @@ services:
       - "80:80"
     volumes:
       - ./src:/var/www/html
+      - ./.htaccess:/var/www/html/.htaccess
     environment:
       - MYSQL_HOST=db
       - MYSQL_DATABASE=guerre_iran
