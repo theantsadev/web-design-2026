@@ -23,6 +23,21 @@
     # Auteur: /auteur/mon-slug
     RewriteRule ^auteur/([a-z0-9\-]+)/?$ pages/auteur.php?slug=$1 [L,QSA]
 
-    # Admin
-    RewriteRule ^admin/(.*)$ admin/index.php [L,QSA]
+    # Admin: /admin/login, /admin/dashboard, /admin/articles/new, etc
+    RewriteRule ^admin/login/?$ admin/index.php?page=login [L,QSA]
+    RewriteRule ^admin/logout/?$ admin/index.php?page=logout [L,QSA]
+    RewriteRule ^admin/dashboard/?$ admin/index.php?page=dashboard [L,QSA]
+    RewriteRule ^admin/articles/?$ admin/index.php?page=articles [L,QSA]
+    RewriteRule ^admin/articles/new/?$ admin/index.php?page=articles&action=new [L,QSA]
+    RewriteRule ^admin/articles/edit/([0-9]+)/?$ admin/index.php?page=articles&action=edit&id=$1 [L,QSA]
+    RewriteRule ^admin/categories/?$ admin/index.php?page=categories [L,QSA]
+    RewriteRule ^admin/categories/new/?$ admin/index.php?page=categories&action=new [L,QSA]
+    RewriteRule ^admin/categories/edit/([0-9]+)/?$ admin/index.php?page=categories&action=edit&id=$1 [L,QSA]
+    RewriteRule ^admin/tags/?$ admin/index.php?page=tags [L,QSA]
+    RewriteRule ^admin/tags/new/?$ admin/index.php?page=tags&action=new [L,QSA]
+    RewriteRule ^admin/tags/edit/([0-9]+)/?$ admin/index.php?page=tags&action=edit&id=$1 [L,QSA]
+    RewriteRule ^admin/auteurs/?$ admin/index.php?page=auteurs [L,QSA]
+    RewriteRule ^admin/auteurs/new/?$ admin/index.php?page=auteurs&action=new [L,QSA]
+    RewriteRule ^admin/auteurs/edit/([0-9]+)/?$ admin/index.php?page=auteurs&action=edit&id=$1 [L,QSA]
 </IfModule>
+

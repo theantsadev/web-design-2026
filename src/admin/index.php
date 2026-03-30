@@ -8,19 +8,19 @@ require_once __DIR__ . '/../config.php';
 require_once __DIR__ . '/../functions.php';
 require_once __DIR__ . '/../session.php';
 
-// Parse l'URL admin
-$pathInfo = $_SERVER['PATH_INFO'] ?? '';
-$path = trim($pathInfo, '/');
-$parts = explode('/', $path);
+// Récupère la page et action depuis les paramètres GET (définis par .htaccess)
+$page = getParam('page', '');
+$action = getParam('action', '');
+$id = (int)getParam('id', 0);
 
-// Récupère la section (login, dashboard, articles, etc.)
-$section = $parts[1] ?? '';
-$action = $parts[2] ?? '';
-$id = $parts[3] ?? '';
-
-// Pages publiques (login, etc.)
-if ($section === 'login') {
+// Pages publiques (login, logout)
+if ($page === 'login') {
     include 'login.php';
+    exit;
+}
+
+if ($page === 'logout') {
+    include 'logout.php';
     exit;
 }
 
@@ -28,16 +28,18 @@ if ($section === 'login') {
 requireLogin();
 
 // Dashboard
-if ($section === 'dashboard' || empty($section)) {
+if ($page === 'dashboard' || empty($page)) {
     include 'dashboard.php';
     exit;
 }
 
 // Articles
-if ($section === 'articles') {
+if ($page === 'articles') {
     if ($action === 'new') {
+        $_GET['edit'] = null;
         include 'articles/form.php';
     } elseif ($action === 'edit' && $id) {
+        $_GET['edit'] = $id;
         include 'articles/form.php';
     } else {
         include 'articles/list.php';
@@ -46,10 +48,12 @@ if ($section === 'articles') {
 }
 
 // Catégories
-if ($section === 'categories') {
+if ($page === 'categories') {
     if ($action === 'new') {
+        $_GET['edit'] = null;
         include 'categories/form.php';
     } elseif ($action === 'edit' && $id) {
+        $_GET['edit'] = $id;
         include 'categories/form.php';
     } else {
         include 'categories/list.php';
@@ -58,10 +62,12 @@ if ($section === 'categories') {
 }
 
 // Tags
-if ($section === 'tags') {
+if ($page === 'tags') {
     if ($action === 'new') {
+        $_GET['edit'] = null;
         include 'tags/form.php';
     } elseif ($action === 'edit' && $id) {
+        $_GET['edit'] = $id;
         include 'tags/form.php';
     } else {
         include 'tags/list.php';
@@ -70,10 +76,12 @@ if ($section === 'tags') {
 }
 
 // Auteurs
-if ($section === 'auteurs') {
+if ($page === 'auteurs') {
     if ($action === 'new') {
+        $_GET['edit'] = null;
         include 'auteurs/form.php';
     } elseif ($action === 'edit' && $id) {
+        $_GET['edit'] = $id;
         include 'auteurs/form.php';
     } else {
         include 'auteurs/list.php';
