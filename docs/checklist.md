@@ -8,15 +8,15 @@
 
 ## 1. Base de données MySQL
 
-- [ ] Créer la table `article` (id, titre, slug, chapeau, contenu_html, date_publication, date_modification, statut, auteur_id, categorie_id, seo_title, seo_meta_description, nb_vues)
-- [ ] Créer la table `categorie` (id, nom, slug, description, meta_description)
-- [ ] Créer la table `tag` (id, nom, slug)
-- [ ] Créer la table `image` (id, article_id, url, alt, legende, ordre, est_principale)
-- [ ] Créer la table `article_tag` (table de liaison n,n)
-- [ ] Créer la table `auteur` (id, nom, bio, photo_url, email)
-- [ ] Créer la table `utilisateur` (id, login, password_hash, role)
-- [ ] Configurer toutes les contraintes (FK, UNIQUE, NOT NULL, etc.)
-- [ ] Implémenter le script `sql/init.sql` pour Docker
+- [x] Créer la table `article` (id, titre, slug, chapeau, contenu_html, date_publication, date_modification, statut, auteur_id, categorie_id, seo_title, seo_meta_description, nb_vues)
+- [x] Créer la table `categorie` (id, nom, slug, description, meta_description)
+- [x] Créer la table `tag` (id, nom, slug)
+- [x] Créer la table `image` (id, article_id, url, alt, legende, ordre, est_principale)
+- [x] Créer la table `article_tag` (table de liaison n,n)
+- [x] Créer la table `auteur` (id, nom, bio, photo_url, email)
+- [x] Créer la table `utilisateur` (id, login, password_hash, role)
+- [x] Configurer toutes les contraintes (FK, UNIQUE, NOT NULL, etc.)
+- [x] Implémenter le script `sql/init.sql` pour Docker
 
 ---
 
@@ -78,18 +78,18 @@
 
 ## 4. URL Rewriting
 
-- [ ] Créer fichier `.htaccess`
-  - [ ] RewriteEngine On
-  - [ ] Règle page d'accueil : `^$` → `index.php`
-  - [ ] Règle article : `^article/([a-z0-9\-]+)$` → `pages/article.php?slug=$1`
-  - [ ] Règle catégorie : `^categorie/([a-z0-9\-]+)$` → `pages/categorie.php?slug=$1`
-  - [ ] Règle tag : `^tag/([a-z0-9\-]+)$` → `pages/tag.php?slug=$1`
-  - [ ] Règle auteur : `^auteur/([a-z0-9\-]+)$` → `pages/auteur.php?slug=$1`
-- [ ] Implémenter fonction `generateSlug()` en PHP
-  - [ ] Convertir en minuscules
-  - [ ] Translittérer les accents (UTF-8 → ASCII)
-  - [ ] Supprimer caractères spéciaux
-  - [ ] Remplacer espaces/tirets multiples par un seul tiret
+- [x] Créer fichier `.htaccess`
+  - [x] RewriteEngine On
+  - [x] Règle page d'accueil : `^$` → `index.php`
+  - [x] Règle article : `^article/([a-z0-9\-]+)$` → `pages/article.php?slug=$1`
+  - [x] Règle catégorie : `^categorie/([a-z0-9\-]+)$` → `pages/categorie.php?slug=$1`
+  - [x] Règle tag : `^tag/([a-z0-9\-]+)$` → `pages/tag.php?slug=$1`
+  - [x] Règle auteur : `^auteur/([a-z0-9\-]+)$` → `pages/auteur.php?slug=$1`
+- [x] Implémenter fonction `generateSlug()` en PHP
+  - [x] Convertir en minuscules
+  - [x] Translittérer les accents (UTF-8 → ASCII)
+  - [x] Supprimer caractères spéciaux
+  - [x] Remplacer espaces/tirets multiples par un seul tiret
 - [ ] Tester les URLs propres en local
 
 ---
@@ -150,11 +150,11 @@
 
 ## 6. Configuration Docker
 
-- [ ] Créer `docker-compose.yml`
-  - [ ] Service web : php:8.2-apache sur port 80
-  - [ ] Service db : mysql:8.0
-  - [ ] Variables d'environnement MySQL
-  - [ ] Volumes (`./src:/var/www/html`, sql init)
+- [x] Créer `docker-compose.yml`
+  - [x] Service web : php:8.2-apache sur port 80
+  - [x] Service db : mysql:8.0
+  - [x] Variables d'environnement MySQL
+  - [x] Volumes (`./src:/var/www/html`, sql init)
 - [ ] Créer `Dockerfile` si besoin de customisation PHP
 - [ ] Tester le déploiement : `docker-compose up`
 - [ ] Vérifier accès à `http://localhost`
