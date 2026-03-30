@@ -1,0 +1,25 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Empêcher les requêtes sur des fichiers/répertoires réels
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+
+    # Page d'accueil
+    RewriteRule ^/?$ index.php [L]
+
+    # Article: /article/mon-slug-ici
+    RewriteRule ^article/([a-z0-9\-]+)/?$ pages/article.php?slug=$1 [L,QSA]
+
+    # Catégorie: /categorie/mon-slug-ici
+    RewriteRule ^categorie/([a-z0-9\-]+)/?$ pages/categorie.php?slug=$1 [L,QSA]
+
+    # Tag: /tag/mon-slug
+    RewriteRule ^tag/([a-z0-9\-]+)/?$ pages/tag.php?slug=$1 [L,QSA]
+
+    # Auteur: /auteur/mon-slug
+    RewriteRule ^auteur/([a-z0-9\-]+)/?$ pages/auteur.php?slug=$1 [L,QSA]
+
+    # Admin
+    RewriteRule ^admin/(.*)$ admin/index.php [L,QSA]
+</IfModule>
