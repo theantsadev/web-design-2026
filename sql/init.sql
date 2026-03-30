@@ -87,8 +87,8 @@ CREATE TABLE IF NOT EXISTS article_tag (
 
 -- Insertion des utilisateurs par défaut
 INSERT INTO utilisateur (login, password_hash, role) VALUES
-  ('admin', '$2y$10$YIjlrBBy2VbvP.QYJhNUv.qKmHc0ylBdFrLdoSG1glzx.u9mq0Fbe', 'admin'),
-  ('editeur', '$2y$10$YIjlrBBy2VbvP.QYJhNUv.qKmHc0ylBdFrLdoSG1glzx.u9mq0Fbe', 'editeur');
+  ('admin', '$2y$10$ADaKUr3eMvEL.JQvxJDoAul/G8LKD7/l2F2W5b3VKO.mjxhIV4Q9W', 'admin'),
+  ('editeur', '$2y$10$ADaKUr3eMvEL.JQvxJDoAul/G8LKD7/l2F2W5b3VKO.mjxhIV4Q9W', 'editeur');
 
 -- Insertion des catégories par défaut
 INSERT INTO categorie (nom, slug, description, meta_description) VALUES
