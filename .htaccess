@@ -8,6 +8,9 @@
     # Page d'accueil
     RewriteRule ^/?$ index.php [L]
 
+    # Sitemap
+    RewriteRule ^sitemap\.xml/?$ sitemap.xml.php [L]
+
     # Article: /article/mon-slug-ici
     RewriteRule ^article/([a-z0-9\-]+)/?$ pages/article.php?slug=$1 [L,QSA]
 

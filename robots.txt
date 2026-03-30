@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+
+# Chemins protégés
+Disallow: /admin/
+Disallow: /login/
+
+# Sitemap
+Sitemap: /sitemap.xml
