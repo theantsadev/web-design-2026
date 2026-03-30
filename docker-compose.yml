@@ -2,20 +2,19 @@ version: '3.8'
 
 services:
   web:
-    image: php:8.2-apache
+    build: .
     ports:
       - "80:80"
     volumes:
       - ./src:/var/www/html
-      - ./.htaccess:/var/www/html/.htaccess
     environment:
       - MYSQL_HOST=db
       - MYSQL_DATABASE=guerre_iran
       - MYSQL_USER=user
       - MYSQL_PASSWORD=password
-      - MYSQL_ROOT_PASSWORD=rootpassword
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     networks:
       - app_network
 
@@ -33,6 +32,10 @@ services:
       - db_data:/var/lib/mysql
     networks:
       - app_network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
 
 volumes:
   db_data:
@@ -40,3 +43,4 @@ volumes:
 networks:
   app_network:
     driver: bridge
+
