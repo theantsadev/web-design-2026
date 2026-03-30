@@ -97,6 +97,7 @@
 ## 5. Optimisation SEO
 
 ### 5.1 On-Page SEO
+
 - [ ] Balise `<title>` unique par page (50-60 car.)
 - [ ] Balise `<meta name="description">` (150-160 car.)
 - [ ] Un seul `<h1>` par page (titre article)
@@ -111,6 +112,7 @@
   - [ ] headline, datePublished, dateModified, author, image
 
 ### 5.2 Fichiers techniques
+
 - [ ] Créer `robots.txt` à la racine
   - [ ] Allow /
   - [ ] Disallow /admin/, /login/
@@ -120,6 +122,7 @@
   - [ ] Inclure lastmod et priority
 
 ### 5.3 Responsive et performance
+
 - [ ] CSS media queries (mobile-first)
 - [ ] Meta viewport : `width=device-width, initial-scale=1.0`
 - [ ] HTTPS activé (Docker/certificat)
@@ -127,20 +130,21 @@
 - [ ] Test Lighthouse desktop
 
 ### 5.4 Checklist SEO finale
-| # | Point | Statut |
-|---|---|---|
-| 1 | URL normalisée (rewriting) | ☐ |
-| 2 | Structure H1→H6 | ☐ |
-| 3 | `<title>` unique par page | ☐ |
-| 4 | `<meta description>` | ☐ |
-| 5 | `alt` sur les images | ☐ |
-| 6 | Test Lighthouse mobile | ☐ |
-| 7 | Test Lighthouse desktop | ☐ |
-| 8 | Mobile responsive | ☐ |
-| 9 | HTTPS activé | ☐ |
-| 10 | `robots.txt` configuré | ☐ |
-| 11 | `sitemap.xml` | ☐ |
-| 12 | Schema.org (NewsArticle) | ☐ |
+
+| #   | Point                      | Statut |
+| --- | -------------------------- | ------ |
+| 1   | URL normalisée (rewriting) | ☐      |
+| 2   | Structure H1→H6            | ☐      |
+| 3   | `<title>` unique par page  | ☐      |
+| 4   | `<meta description>`       | ☐      |
+| 5   | `alt` sur les images       | ☐      |
+| 6   | Test Lighthouse mobile     | ☐      |
+| 7   | Test Lighthouse desktop    | ☐      |
+| 8   | Mobile responsive          | ☐      |
+| 9   | HTTPS activé               | ☐      |
+| 10  | `robots.txt` configuré     | ☐      |
+| 11  | `sitemap.xml`              | ☐      |
+| 12  | Schema.org (NewsArticle)   | ☐      |
 
 ---
 
