@@ -25,6 +25,7 @@ $query = "
 
 $stmt = $pdo->query($query);
 $articles = $stmt->fetchAll();
+echo $articles ? 'Articles récupérés: ' . count($articles) : 'Aucun article trouvé';
 ?>
 <!DOCTYPE html>
 <html lang="fr">
