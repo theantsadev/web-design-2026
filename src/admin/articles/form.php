@@ -154,7 +154,7 @@ if ($article) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo $action === 'edit' ? 'Éditer' : 'Créer'; ?> Article - Admin</title>
-    <script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/6/tinymce.min.js"></script>
+    <script src="https://cdn.tiny.cloud/1/0pvlc2xj6msvkrovd2uddkx3r42zwgre63ut8jh054wavvq2/tinymce/8/tinymce.min.js" referrerpolicy="origin" crossorigin="anonymous"></script>
     <style>
         * {
             margin: 0;
@@ -482,11 +482,15 @@ if ($article) {
         // Initialiser TinyMCE
         tinymce.init({
             selector: '#contenu',
-            plugins: 'lists link image table code',
-            toolbar: 'formatselect | bold italic underline | alignleft aligncenter alignright | bullist numlist | link image code',
-            height: 400,
-            menubar: false,
-            branding: false
+            plugins: [
+                'anchor', 'autolink', 'charmap', 'codesample', 'emoticons', 'link', 'lists', 'media', 'searchreplace', 'table', 'visualblocks', 'wordcount',
+                'checklist', 'mediaembed', 'casechange', 'formatpainter', 'pageembed', 'a11ychecker', 'tinymcespellchecker', 'permanentpen', 'powerpaste', 'advtable', 'advcode', 'advtemplate'
+            ],
+            toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link media table | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
+            height: 500,
+            menubar: 'file edit view insert format tools table',
+            branding: false,
+            promotion: false
         });
 
         // Fonction pour générer un slug
