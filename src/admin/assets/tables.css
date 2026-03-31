@@ -1,0 +1,222 @@
+/*
+ * Tables CSS - Design Simple pour les Listes
+ */
+
+.data-table {
+    background: #fff;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+}
+
+.data-table-header {
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid #e9ecef;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #fafafa;
+}
+
+.data-table-title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+.data-table-title i { color: var(--primary); }
+
+.data-table-search {
+    position: relative;
+}
+
+.data-table-search input {
+    padding: 0.5rem 1rem 0.5rem 2.25rem;
+    border: 1px solid #ddd;
+    border-radius: var(--radius);
+    font-size: 0.875rem;
+    width: 220px;
+}
+
+.data-table-search input:focus {
+    outline: none;
+    border-color: var(--primary);
+}
+
+.data-table-search i {
+    position: absolute;
+    left: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+    font-size: 0.8rem;
+}
+
+.table-wrapper { overflow-x: auto; }
+
+.enhanced-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.enhanced-table th {
+    background: #f8f9fa;
+    padding: 1rem 1.25rem;
+    text-align: left;
+    font-weight: 600;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-muted);
+    border-bottom: 2px solid #e9ecef;
+}
+
+.enhanced-table td {
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid #f1f3f4;
+    vertical-align: middle;
+}
+
+.enhanced-table tr:hover { background: #f8f9fa; }
+
+.table-cell-title {
+    font-weight: 500;
+    color: var(--text-dark);
+}
+
+.table-cell-subtitle {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    margin-top: 0.25rem;
+}
+
+.table-cell-avatar {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.table-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--primary);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.table-cell-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.action-btn {
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: var(--radius);
+    background: #f1f3f4;
+    color: var(--text-muted);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    transition: all 0.2s;
+}
+
+.action-btn:hover { transform: translateY(-1px); }
+.action-btn.edit:hover { background: var(--primary); color: #fff; }
+.action-btn.delete:hover { background: var(--danger); color: #fff; }
+
+/* Table Empty */
+.table-empty {
+    text-align: center;
+    padding: 3rem;
+}
+
+.table-empty-icon {
+    font-size: 3rem;
+    color: #ddd;
+    margin-bottom: 1rem;
+}
+
+.table-empty-title {
+    font-size: 1.1rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+
+.table-empty-description {
+    color: var(--text-muted);
+    margin-bottom: 1rem;
+}
+
+/* Pagination */
+.table-pagination {
+    padding: 1rem 1.5rem;
+    border-top: 1px solid #e9ecef;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #fafafa;
+}
+
+.pagination-info { font-size: 0.875rem; color: var(--text-muted); }
+
+.pagination-controls {
+    display: flex;
+    gap: 0.25rem;
+}
+
+.pagination-btn {
+    width: 32px;
+    height: 32px;
+    border: 1px solid #e9ecef;
+    background: #fff;
+    border-radius: var(--radius);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    color: var(--text-muted);
+    font-size: 0.875rem;
+    transition: all 0.2s;
+}
+
+.pagination-btn:hover { border-color: var(--primary); color: var(--primary); }
+.pagination-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+
+/* Responsive */
+@media (max-width: 768px) {
+    .data-table-header { flex-direction: column; gap: 1rem; }
+    .data-table-search input { width: 100%; }
+
+    .enhanced-table thead { display: none; }
+    .enhanced-table tr {
+        display: block;
+        border: 1px solid #e9ecef;
+        margin-bottom: 1rem;
+        border-radius: var(--radius);
+    }
+    .enhanced-table td {
+        display: flex;
+        justify-content: space-between;
+        padding: 0.75rem 1rem;
+    }
+    .enhanced-table td::before {
+        content: attr(data-label);
+        font-weight: 600;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+    }
+}

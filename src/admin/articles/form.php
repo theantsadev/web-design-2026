@@ -154,346 +154,255 @@ if ($article) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo $action === 'edit' ? 'Éditer' : 'Créer'; ?> Article - Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/admin/assets/modern-admin.css">
+    <link rel="stylesheet" href="/admin/assets/forms.css">
     <script src="https://cdn.tiny.cloud/1/0pvlc2xj6msvkrovd2uddkx3r42zwgre63ut8jh054wavvq2/tinymce/8/tinymce.min.js" referrerpolicy="origin" crossorigin="anonymous"></script>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f5f5f5;
-            color: #333;
-        }
-
-        .navbar {
-            background: #2c3e50;
-            color: white;
-            padding: 1rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .navbar h1 {
-            font-size: 1.5rem;
-        }
-
-        .navbar a {
-            color: white;
-            text-decoration: none;
-            margin-left: 2rem;
-            padding: 0.5rem 1rem;
-            border-radius: 4px;
-        }
-
-        .main-content {
-            margin-top: 60px;
-            padding: 2rem;
-            max-width: 1200px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        .page-title {
-            font-size: 2rem;
-            margin-bottom: 2rem;
-        }
-
-        .form-container {
-            background: white;
-            border-radius: 8px;
-            padding: 2rem;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1.5rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .form-row.full {
-            grid-template-columns: 1fr;
-        }
-
-        .form-group {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .form-group label {
-            font-weight: bold;
-            margin-bottom: 0.5rem;
-        }
-
-        .form-group input[type="text"],
-        .form-group input[type="email"],
-        .form-group textarea,
-        .form-group select {
-            padding: 0.75rem;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 1rem;
-            font-family: inherit;
-        }
-
-        .form-group textarea {
-            resize: vertical;
-            min-height: 100px;
-        }
-
-        .form-group input:focus,
-        .form-group textarea:focus,
-        .form-group select:focus {
-            outline: none;
-            border-color: #3498db;
-            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.1);
-        }
-
-        .tinymce-container {
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            overflow: hidden;
-            margin-top: 0.5rem;
-        }
-
-        .checkbox-group {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-
-        .checkbox-group label {
-            display: flex;
-            align-items: center;
-            font-weight: normal;
-            margin: 0;
-        }
-
-        .checkbox-group input[type="checkbox"] {
-            margin-right: 0.5rem;
-            width: 18px;
-            height: 18px;
-            cursor: pointer;
-        }
-
-        .btn-group {
-            display: flex;
-            gap: 1rem;
-            margin-top: 2rem;
-        }
-
-        .btn {
-            padding: 0.75rem 1.5rem;
-            background: #3498db;
-            color: white;
-            text-decoration: none;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 1rem;
-            font-weight: bold;
-            transition: background 0.3s;
-        }
-
-        .btn:hover {
-            background: #2980b9;
-        }
-
-        .btn-secondary {
-            background: #95a5a6;
-        }
-
-        .btn-secondary:hover {
-            background: #7f8c8d;
-        }
-
-        .alert {
-            padding: 0.75rem;
-            border-radius: 4px;
-            margin-bottom: 1.5rem;
-        }
-
-        .alert-error {
-            background: #fee;
-            color: #c33;
-            border: 1px solid #fcc;
-        }
-
-        .alert-success {
-            background: #efe;
-            color: #3c3;
-            border: 1px solid #cfc;
-        }
-
-        .help-text {
-            font-size: 0.85rem;
-            color: #999;
-            margin-top: 0.25rem;
-        }
-
-        @media (max-width: 768px) {
-            .form-row {
-                grid-template-columns: 1fr;
-            }
-
-            .btn-group {
-                flex-direction: column;
-            }
-        }
-    </style>
 </head>
 <body>
-    <div class="navbar">
-        <h1>📝 <?php echo $action === 'edit' ? 'Éditer' : 'Créer'; ?> Article</h1>
-        <div>
-            <a href="/admin/articles/">← Articles</a>
-        </div>
-    </div>
+    <div class="admin-layout">
+        <!-- Navbar -->
+        <nav class="navbar">
+            <div class="navbar-brand">
+                <i class="fas fa-edit"></i>
+                <?php echo $action === 'edit' ? 'Éditer' : 'Créer'; ?> Article
+            </div>
+            <div class="navbar-user">
+                <a href="/admin/articles/" class="btn btn-secondary btn-sm">
+                    <i class="fas fa-arrow-left"></i>
+                    Retour
+                </a>
+            </div>
+        </nav>
 
-    <div class="main-content">
-        <div class="form-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <nav class="sidebar-nav">
+                <div class="nav-group">
+                    <div class="nav-group-title">Menu</div>
+                    <div class="nav-item">
+                        <a href="/admin/dashboard/" class="nav-link">
+                            <span class="nav-icon"><i class="fas fa-chart-pie"></i></span>
+                            <span class="nav-text">Dashboard</span>
+                        </a>
+                    </div>
+                    <div class="nav-item">
+                        <a href="/admin/articles/" class="nav-link active">
+                            <span class="nav-icon"><i class="fas fa-newspaper"></i></span>
+                            <span class="nav-text">Articles</span>
+                        </a>
+                    </div>
+                    <div class="nav-item">
+                        <a href="/admin/categories/" class="nav-link">
+                            <span class="nav-icon"><i class="fas fa-folder"></i></span>
+                            <span class="nav-text">Catégories</span>
+                        </a>
+                    </div>
+                    <div class="nav-item">
+                        <a href="/admin/tags/" class="nav-link">
+                            <span class="nav-icon"><i class="fas fa-tags"></i></span>
+                            <span class="nav-text">Tags</span>
+                        </a>
+                    </div>
+                    <div class="nav-item">
+                        <a href="/admin/auteurs/" class="nav-link">
+                            <span class="nav-icon"><i class="fas fa-users"></i></span>
+                            <span class="nav-text">Auteurs</span>
+                        </a>
+                    </div>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="page-header">
+                <div>
+                    <h1 class="page-title">
+                        <i class="fas fa-<?php echo $action === 'edit' ? 'edit' : 'plus'; ?>"></i>
+                        <?php echo $action === 'edit' ? 'Modifier' : 'Nouvel'; ?> Article
+                    </h1>
+                    <p class="page-subtitle">Rédigez votre article de presse</p>
+                </div>
+            </div>
+
             <?php if ($error): ?>
-                <div class="alert alert-error"><?php echo $error; ?></div>
+                <div class="alert alert-error">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <?php echo escape($error); ?>
+                </div>
             <?php endif; ?>
 
             <?php if ($success): ?>
-                <div class="alert alert-success"><?php echo $success; ?></div>
+                <div class="alert alert-success">
+                    <i class="fas fa-check-circle"></i>
+                    <?php echo escape($success); ?>
+                </div>
             <?php endif; ?>
 
-            <form method="POST" enctype="multipart/form-data">
-                <!-- Titre et Slug -->
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="titre">Titre *</label>
-                        <input type="text" id="titre" name="titre" required
-                               value="<?php echo $article ? escape($article['titre']) : ''; ?>"
-                               onchange="if(this.form.slug.value === '') this.form.slug.value = slugify(this.value)">
-                    </div>
-                    <div class="form-group">
-                        <label for="slug">Slug</label>
-                        <input type="text" id="slug" name="slug"
-                               value="<?php echo $article ? escape($article['slug']) : ''; ?>">
-                        <div class="help-text">Auto-généré à partir du titre si vide</div>
-                    </div>
+            <div class="form-card">
+                <div class="form-card-header">
+                    <h2 class="form-card-title">
+                        <i class="fas fa-file-alt"></i>
+                        Informations de l'article
+                    </h2>
                 </div>
-
-                <!-- Chapeau -->
-                <div class="form-row full">
-                    <div class="form-group">
-                        <label for="chapeau">Chapeau (résumé court)</label>
-                        <textarea id="chapeau" name="chapeau" rows="3"><?php echo $article ? escape($article['chapeau']) : ''; ?></textarea>
-                    </div>
-                </div>
-
-                <!-- Contenu HTML (TinyMCE) -->
-                <div class="form-row full">
-                    <div class="form-group">
-                        <label for="contenu">Contenu *</label>
-                        <textarea id="contenu" name="contenu" required><?php echo $article ? $article['contenu_html'] : ''; ?></textarea>
-                    </div>
-                </div>
-
-                <!-- Catégorie et Auteur -->
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="categorie_id">Catégorie</label>
-                        <select id="categorie_id" name="categorie_id">
-                            <option value="">-- Sélectionner une catégorie --</option>
-                            <?php foreach ($categories as $cat): ?>
-                                <option value="<?php echo $cat['id']; ?>"
-                                        <?php echo $article && $article['categorie_id'] == $cat['id'] ? 'selected' : ''; ?>>
-                                    <?php echo escape($cat['nom']); ?>
-                                </option>
-                            <?php endforeach; ?>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="auteur_id">Auteur</label>
-                        <select id="auteur_id" name="auteur_id">
-                            <option value="">-- Sélectionner un auteur --</option>
-                            <?php foreach ($auteurs as $aut): ?>
-                                <option value="<?php echo $aut['id']; ?>"
-                                        <?php echo $article && $article['auteur_id'] == $aut['id'] ? 'selected' : ''; ?>>
-                                    <?php echo escape($aut['nom']); ?>
-                                </option>
-                            <?php endforeach; ?>
-                        </select>
-                    </div>
-                </div>
-
-                <!-- Tags -->
-                <div class="form-row full">
-                    <div class="form-group">
-                        <label>Tags</label>
-                        <div class="checkbox-group">
-                            <?php foreach ($allTags as $t): ?>
-                                <label>
-                                    <input type="checkbox" name="tags[]" value="<?php echo $t['id']; ?>"
-                                           <?php echo in_array($t['id'], $selectedTagIds) ? 'checked' : ''; ?>>
-                                    <?php echo escape($t['nom']); ?>
-                                </label>
-                            <?php endforeach; ?>
+                <div class="form-card-body">
+                    <form method="POST" enctype="multipart/form-data">
+                        <!-- Titre et Slug -->
+                        <div class="form-section">
+                            <div class="form-section-title"><i class="fas fa-heading"></i> Titre</div>
+                            <div class="form-row two-columns">
+                                <div class="form-group">
+                                    <label for="titre" class="form-label required">Titre</label>
+                                    <input type="text" id="titre" name="titre" class="form-input" required
+                                           value="<?php echo $article ? escape($article['titre']) : ''; ?>"
+                                           onchange="if(this.form.slug.value === '') this.form.slug.value = slugify(this.value)"
+                                           placeholder="Titre de l'article">
+                                </div>
+                                <div class="form-group">
+                                    <label for="slug" class="form-label">Slug (URL)</label>
+                                    <input type="text" id="slug" name="slug" class="form-input"
+                                           value="<?php echo $article ? escape($article['slug']) : ''; ?>"
+                                           placeholder="mon-article">
+                                    <div class="form-help">Auto-généré si vide</div>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
 
-                <!-- SEO -->
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="seo_title">SEO Title (max 60 caractères)</label>
-                        <input type="text" id="seo_title" name="seo_title" maxlength="60"
-                               value="<?php echo $article ? escape($article['seo_title']) : ''; ?>">
-                    </div>
-                    <div class="form-group">
-                        <label for="seo_meta_description">Meta Description (max 160 caractères)</label>
-                        <textarea id="seo_meta_description" name="seo_meta_description" maxlength="160" rows="2"><?php echo $article ? escape($article['seo_meta_description']) : ''; ?></textarea>
-                    </div>
-                </div>
+                        <!-- Chapeau -->
+                        <div class="form-section">
+                            <div class="form-section-title"><i class="fas fa-align-left"></i> Chapeau</div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="chapeau" class="form-label">Résumé court</label>
+                                    <textarea id="chapeau" name="chapeau" class="form-textarea" rows="3"
+                                              placeholder="Introduction de l'article..."><?php echo $article ? escape($article['chapeau']) : ''; ?></textarea>
+                                </div>
+                            </div>
+                        </div>
 
-                <!-- Statut -->
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="statut">Statut</label>
-                        <select id="statut" name="statut">
-                            <option value="brouillon" <?php echo (!$article || $article['statut'] === 'brouillon') ? 'selected' : ''; ?>>Brouillon</option>
-                            <option value="publié" <?php echo ($article && $article['statut'] === 'publié') ? 'selected' : ''; ?>>Publié</option>
-                            <option value="archivé" <?php echo ($article && $article['statut'] === 'archivé') ? 'selected' : ''; ?>>Archivé</option>
-                        </select>
-                    </div>
-                </div>
+                        <!-- Contenu -->
+                        <div class="form-section">
+                            <div class="form-section-title"><i class="fas fa-edit"></i> Contenu</div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="contenu" class="form-label required">Contenu principal</label>
+                                    <div class="editor-wrapper">
+                                        <textarea id="contenu" name="contenu" required><?php echo $article ? $article['contenu_html'] : ''; ?></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
-                <!-- Boutons -->
-                <div class="btn-group">
-                    <button type="submit" class="btn">
-                        <?php echo $action === 'edit' ? '✏️ Modifier' : '✚ Créer'; ?> l'article
-                    </button>
-                    <a href="/admin/articles/" class="btn btn-secondary">Annuler</a>
+                        <!-- Classification -->
+                        <div class="form-section">
+                            <div class="form-section-title"><i class="fas fa-tags"></i> Classification</div>
+                            <div class="form-row two-columns">
+                                <div class="form-group">
+                                    <label for="categorie_id" class="form-label"><i class="fas fa-folder"></i> Catégorie</label>
+                                    <select id="categorie_id" name="categorie_id" class="form-select">
+                                        <option value="">-- Sélectionner --</option>
+                                        <?php foreach ($categories as $cat): ?>
+                                            <option value="<?php echo $cat['id']; ?>"
+                                                    <?php echo $article && $article['categorie_id'] == $cat['id'] ? 'selected' : ''; ?>>
+                                                <?php echo escape($cat['nom']); ?>
+                                            </option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="auteur_id" class="form-label"><i class="fas fa-user"></i> Auteur</label>
+                                    <select id="auteur_id" name="auteur_id" class="form-select">
+                                        <option value="">-- Sélectionner --</option>
+                                        <?php foreach ($auteurs as $aut): ?>
+                                            <option value="<?php echo $aut['id']; ?>"
+                                                    <?php echo $article && $article['auteur_id'] == $aut['id'] ? 'selected' : ''; ?>>
+                                                <?php echo escape($aut['nom']); ?>
+                                            </option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label"><i class="fas fa-hashtag"></i> Tags</label>
+                                    <div class="checkbox-grid">
+                                        <?php foreach ($allTags as $t): ?>
+                                            <label class="checkbox-item">
+                                                <input type="checkbox" name="tags[]" value="<?php echo $t['id']; ?>"
+                                                       <?php echo in_array($t['id'], $selectedTagIds) ? 'checked' : ''; ?>>
+                                                <?php echo escape($t['nom']); ?>
+                                            </label>
+                                        <?php endforeach; ?>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- SEO -->
+                        <div class="form-section">
+                            <div class="form-section-title"><i class="fas fa-search"></i> SEO</div>
+                            <div class="form-row two-columns">
+                                <div class="form-group">
+                                    <label for="seo_title" class="form-label">Titre SEO (60 car.)</label>
+                                    <input type="text" id="seo_title" name="seo_title" class="form-input" maxlength="60"
+                                           value="<?php echo $article ? escape($article['seo_title']) : ''; ?>"
+                                           placeholder="Titre optimisé pour Google">
+                                </div>
+                                <div class="form-group">
+                                    <label for="seo_meta_description" class="form-label">Meta Description (160 car.)</label>
+                                    <textarea id="seo_meta_description" name="seo_meta_description" class="form-textarea" maxlength="160" rows="2"
+                                              placeholder="Description pour les moteurs de recherche"><?php echo $article ? escape($article['seo_meta_description']) : ''; ?></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Statut -->
+                        <div class="form-section">
+                            <div class="form-section-title"><i class="fas fa-flag"></i> Publication</div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="statut" class="form-label">Statut</label>
+                                    <select id="statut" name="statut" class="form-select">
+                                        <option value="brouillon" <?php echo (!$article || $article['statut'] === 'brouillon') ? 'selected' : ''; ?>>Brouillon</option>
+                                        <option value="publié" <?php echo ($article && $article['statut'] === 'publié') ? 'selected' : ''; ?>>Publié</option>
+                                        <option value="archivé" <?php echo ($article && $article['statut'] === 'archivé') ? 'selected' : ''; ?>>Archivé</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Actions -->
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-lg">
+                                <i class="fas fa-<?php echo $action === 'edit' ? 'save' : 'plus'; ?>"></i>
+                                <?php echo $action === 'edit' ? 'Enregistrer' : 'Créer'; ?>
+                            </button>
+                            <a href="/admin/articles/" class="btn btn-secondary btn-lg">
+                                <i class="fas fa-times"></i>
+                                Annuler
+                            </a>
+                        </div>
+                    </form>
                 </div>
-            </form>
-        </div>
+            </div>
+        </main>
     </div>
 
     <script>
-        // Initialiser TinyMCE
+        // TinyMCE
         tinymce.init({
             selector: '#contenu',
-            plugins: [
-                'anchor', 'autolink', 'charmap', 'codesample', 'emoticons', 'link', 'lists', 'media', 'searchreplace', 'table', 'visualblocks', 'wordcount',
-                'checklist', 'mediaembed', 'casechange', 'formatpainter', 'pageembed', 'a11ychecker', 'tinymcespellchecker', 'permanentpen', 'powerpaste', 'advtable', 'advcode', 'advtemplate'
-            ],
-            toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link media table | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
-            height: 500,
-            menubar: 'file edit view insert format tools table',
-            branding: false,
-            promotion: false
+            plugins: ['anchor', 'autolink', 'charmap', 'link', 'lists', 'media', 'searchreplace', 'table', 'visualblocks', 'wordcount'],
+            toolbar: 'undo redo | bold italic underline | link | bullist numlist | removeformat',
+            height: 400,
+            menubar: false,
+            branding: false
         });
 
-        // Fonction pour générer un slug
+        // Slugify
         function slugify(text) {
             return text
                 .toLowerCase()
