@@ -93,7 +93,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <i class="fas fa-user"></i>
                             Identifiant
                         </label>
-                        <input type="text" id="login" name="login" class="form-input" required autofocus placeholder="Entrez votre identifiant">
+                        <input type="text" id="login" name="login" class="form-input" required autofocus placeholder="admin" value="admin">
                     </div>
 
                     <div class="form-group">
@@ -101,7 +101,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <i class="fas fa-lock"></i>
                             Mot de passe
                         </label>
-                        <input type="password" id="password" name="password" class="form-input" required placeholder="Entrez votre mot de passe">
+                        <input type="password" id="password" name="password" class="form-input" required placeholder="admin123" value = "admin123">
                     </div>
 
                     <button type="submit" class="login-btn">

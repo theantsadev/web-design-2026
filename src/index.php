@@ -86,6 +86,7 @@ $articles = $stmt->fetchAll();
                             <?php if ($mainArticle['image_url']): ?>
                                 <img src="<?php echo escape($mainArticle['image_url']); ?>"
                                      alt="<?php echo escape($mainArticle['image_alt'] ?: $mainArticle['titre']); ?>"
+                                     loading="lazy"
                                      class="main-article-image">
                             <?php else: ?>
                                 <div class="main-article-image"
@@ -128,6 +129,7 @@ $articles = $stmt->fetchAll();
                                 <?php if ($article['image_url']): ?>
                                     <img src="<?php echo escape($article['image_url']); ?>"
                                          alt="<?php echo escape($article['image_alt'] ?: $article['titre']); ?>"
+                                         loading="lazy"
                                          class="sidebar-article-image">
                                 <?php else: ?>
                                     <div class="sidebar-article-image"

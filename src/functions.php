@@ -80,3 +80,70 @@ function basePath() {
 function url($path = '') {
     return basePath() . ltrim($path, '/');
 }
+
+/**
+ * Compresse et optimise une image pour le web
+ * Redimensionne si nécessaire et réduit le poids
+ */
+function compressImage($sourcePath, $destPath, $maxWidth = 1200, $maxHeight = 1200, $quality = 80) {
+    $info = getimagesize($sourcePath);
+    if (!$info) return false;
+
+    list($origWidth, $origHeight, $type) = $info;
+
+    // Calculer les nouvelles dimensions
+    $ratio = min($maxWidth / $origWidth, $maxHeight / $origHeight);
+    if ($ratio >= 1) {
+        $ratio = 1;
+    }
+
+    $newWidth = (int)($origWidth * $ratio);
+    $newHeight = (int)($origHeight * $ratio);
+
+    // Charger l'image source
+    switch ($type) {
+        case IMAGETYPE_JPEG:
+            $srcImage = imagecreatefromjpeg($sourcePath);
+            break;
+        case IMAGETYPE_PNG:
+            $srcImage = imagecreatefrompng($sourcePath);
+            break;
+        case IMAGETYPE_GIF:
+            $srcImage = imagecreatefromgif($sourcePath);
+            break;
+        case IMAGETYPE_WEBP:
+            $srcImage = imagecreatefromwebp($sourcePath);
+            break;
+        default:
+            return false;
+    }
+
+    if (!$srcImage) return false;
+
+    // Créer l'image redimensionnée
+    $dstImage = imagecreatetruecolor($newWidth, $newHeight);
+
+    // Préserver la transpérence pour PNG/GIF/WebP
+    if ($type === IMAGETYPE_PNG || $type === IMAGETYPE_GIF || $type === IMAGETYPE_WEBP) {
+        imagecolortransparent($dstImage, imagecolorallocatealpha($dstImage, 0, 0, 0, 127));
+        imagealphablending($dstImage, false);
+        imagesavealpha($dstImage, true);
+    }
+
+    imagecopyresampled($dstImage, $srcImage, 0, 0, 0, 0, $newWidth, $newHeight, $origWidth, $origHeight);
+
+    // Sauvegarder en JPEG compressé par défaut
+    $ext = strtolower(pathinfo($destPath, PATHINFO_EXTENSION));
+    $success = false;
+
+    if ($ext === 'webp' && function_exists('imagewebp')) {
+        $success = imagewebp($dstImage, $destPath, $quality);
+    } else {
+        $success = imagejpeg($dstImage, $destPath, $quality);
+    }
+
+    imagedestroy($srcImage);
+    imagedestroy($dstImage);
+
+    return $success;
+}

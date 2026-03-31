@@ -1,7 +1,7 @@
 FROM php:8.2-apache
 
 # Activer les modules Apache
-RUN a2enmod rewrite
+RUN a2enmod rewrite deflate expires headers
 
 # Installer les extensions PHP nécessaires
 RUN apt-get update && apt-get install -y \

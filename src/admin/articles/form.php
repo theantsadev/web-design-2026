@@ -145,10 +145,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $ext = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
                         if (!in_array($ext, ['jpg', 'jpeg', 'png', 'gif', 'webp'])) continue;
 
-                        $newFilename = uniqid('img_') . '.' . $ext;
+                        $newFilename = uniqid('img_') . '.jpg';
                         $filepath = $uploadDir . $newFilename;
+                        $tmpPath = $_FILES['images']['tmp_name'][$key];
 
-                        if (move_uploaded_file($_FILES['images']['tmp_name'][$key], $filepath)) {
+                        if (compressImage($tmpPath, $filepath, 1200, 1200, 80)) {
                             $maxOrdre++;
                             $alt = trim($_POST['image_alt'][$key] ?? '');
                             $stmt = $pdo->prepare('

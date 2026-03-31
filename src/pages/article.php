@@ -180,6 +180,7 @@ $connexes = $stmt->fetchAll();
                     <figure>
                         <img src="<?php echo escape($images[0]['url']); ?>"
                              alt="<?php echo escape($images[0]['alt'] ?: $article['titre']); ?>"
+                             loading="lazy"
                              class="article-image-main">
                         <?php if ($images[0]['legende']): ?>
                             <figcaption class="article-image-caption">
@@ -198,7 +199,9 @@ $connexes = $stmt->fetchAll();
                     <div class="articles-images">
                         <?php for ($i = 1; $i < count($images); $i++): ?>
                             <div class="image-item" title="<?php echo escape($images[$i]['legende'] ?? $images[$i]['alt'] ?? ''); ?>">
-                                <img src="<?php echo escape($images[$i]['url']); ?>" alt="<?php echo escape($images[$i]['alt'] ?? $images[$i]['legende'] ?? $article['titre']); ?>">
+                                <img src="<?php echo escape($images[$i]['url']); ?>"
+                                     alt="<?php echo escape($images[$i]['alt'] ?? $images[$i]['legende'] ?? $article['titre']); ?>"
+                                     loading="lazy">
                             </div>
                         <?php endfor; ?>
                     </div>
