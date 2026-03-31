@@ -128,6 +128,78 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
             }
 
+            // Traiter les uploads d'images
+            if (!empty($_FILES['images']['name'][0])) {
+                $uploadDir = __DIR__ . '/../../uploads/agents/';
+                if (!is_dir($uploadDir)) {
+                    mkdir($uploadDir, 0755, true);
+                }
+
+                // Get max ordre for this article
+                $stmt = $pdo->prepare('SELECT COALESCE(MAX(ordre), 0) as max_ordre FROM image WHERE article_id = ?');
+                $stmt->execute([$articleId]);
+                $maxOrdre = $stmt->fetch()['max_ordre'];
+
+                foreach ($_FILES['images']['name'] as $key => $filename) {
+                    if ($_FILES['images']['error'][$key] === UPLOAD_ERR_OK) {
+                        $ext = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+                        if (!in_array($ext, ['jpg', 'jpeg', 'png', 'gif', 'webp'])) continue;
+
+                        $newFilename = uniqid('img_') . '.' . $ext;
+                        $filepath = $uploadDir . $newFilename;
+
+                        if (move_uploaded_file($_FILES['images']['tmp_name'][$key], $filepath)) {
+                            $maxOrdre++;
+                            $alt = trim($_POST['image_alt'][$key] ?? '');
+                            $stmt = $pdo->prepare('
+                                INSERT INTO image (article_id, url, alt, legende, ordre)
+                                VALUES (?, ?, ?, ?, ?)
+                            ');
+                            $stmt->execute([
+                                $articleId,
+                                '/uploads/agents/' . $newFilename,
+                                $alt,
+                                '',
+                                $maxOrdre
+                            ]);
+                        }
+                    }
+                }
+            }
+
+            // Supprimer les images marquées pour suppression
+            if (!empty($_POST['deleted_images'])) {
+                $deletedIds = json_decode($_POST['deleted_images'], true);
+                if (is_array($deletedIds)) {
+                    foreach ($deletedIds as $imgId) {
+                        $stmt = $pdo->prepare('SELECT url FROM image WHERE id = ? AND article_id = ?');
+                        $stmt->execute([(int)$imgId, $articleId]);
+                        $img = $stmt->fetch();
+                        if ($img) {
+                            $filepath = __DIR__ . '/../../' . ltrim($img['url'], '/');
+                            if (file_exists($filepath)) @unlink($filepath);
+                            $pdo->prepare('DELETE FROM image WHERE id = ?')->execute([(int)$imgId]);
+                        }
+                    }
+                }
+            }
+
+            // Mettre à jour l'ordre et les images principales
+            if (!empty($_POST['image_orders'])) {
+                $orders = json_decode($_POST['image_orders'], true);
+                if (is_array($orders)) {
+                    $isMain = isset($_POST['main_image']) ? (int)$_POST['main_image'] : null;
+                    $stmt = $pdo->prepare('UPDATE image SET est_principale = 0 WHERE article_id = ?');
+                    $stmt->execute([$articleId]);
+
+                    foreach ($orders as $imgId => $order) {
+                        $stmt = $pdo->prepare('UPDATE image SET ordre = ?, est_principale = ? WHERE id = ? AND article_id = ?');
+                        $isMainImg = ($isMain && $isMain == $imgId) ? 1 : 0;
+                        $stmt->execute([$order, $isMainImg, (int)$imgId, $articleId]);
+                    }
+                }
+            }
+
             $pdo->commit();
             $success = $action === 'edit' ? 'Article modifié' : 'Article créé';
 
@@ -341,6 +413,61 @@ if ($article) {
                             </div>
                         </div>
 
+                        <!-- Images -->
+                        <div class="form-section">
+                            <div class="form-section-title"><i class="fas fa-images"></i> Images</div>
+
+                            <!-- Upload zone -->
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label">Ajouter des images</label>
+                                    <div class="upload-zone" id="uploadZone">
+                                        <i class="fas fa-cloud-upload-alt"></i>
+                                        <p>Glissez des images ici ou cliquez pour sélectionner</p>
+                                        <input type="file" id="imageFiles" name="images[]" multiple accept="image/*" style="display:none">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Images list -->
+                            <?php if (!empty($images)): ?>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label">Vos images</label>
+                                    <div class="images-list" id="imagesList">
+                                        <?php foreach ($images as $idx => $img): ?>
+                                        <div class="image-item" draggable="true" data-image-id="<?php echo $img['id']; ?>" data-order="<?php echo $idx; ?>">
+                                            <div class="image-preview">
+                                                <img src="<?php echo escape($img['url']); ?>" alt="<?php echo escape($img['alt']); ?>">
+                                                <?php if ($img['est_principale']): ?>
+                                                <span class="badge-main">Principale</span>
+                                                <?php endif; ?>
+                                            </div>
+                                            <div class="image-info">
+                                                <input type="text" name="image_alt[]" class="form-input" placeholder="Texte alt..."
+                                                       value="<?php echo escape($img['alt']); ?>" style="font-size:12px; padding:5px;">
+                                            </div>
+                                            <div class="image-actions">
+                                                <label class="radio-main">
+                                                    <input type="radio" name="main_image" value="<?php echo $img['id']; ?>"
+                                                           <?php echo $img['est_principale'] ? 'checked' : ''; ?>>
+                                                    <span>Principale</span>
+                                                </label>
+                                                <button type="button" class="btn btn-danger btn-sm" onclick="deleteImage(<?php echo $img['id']; ?>)">
+                                                    <i class="fas fa-trash"></i> Supprimer
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <?php endforeach; ?>
+                                    </div>
+                                </div>
+                            </div>
+                            <?php endif; ?>
+
+                            <input type="hidden" name="image_orders" id="imageOrders" value="{}">
+                            <input type="hidden" name="deleted_images" id="deletedImages" value="[]">
+                        </div>
+
                         <!-- SEO -->
                         <div class="form-section">
                             <div class="form-section-title"><i class="fas fa-search"></i> SEO</div>
@@ -367,8 +494,8 @@ if ($article) {
                                     <label for="statut" class="form-label">Statut</label>
                                     <select id="statut" name="statut" class="form-select">
                                         <option value="brouillon" <?php echo (!$article || $article['statut'] === 'brouillon') ? 'selected' : ''; ?>>Brouillon</option>
-                                        <option value="publié" <?php echo ($article && $article['statut'] === 'publié') ? 'selected' : ''; ?>>Publié</option>
-                                        <option value="archivé" <?php echo ($article && $article['statut'] === 'archivé') ? 'selected' : ''; ?>>Archivé</option>
+                                        <option value="publie" <?php echo ($article && $article['statut'] === 'publie') ? 'selected' : ''; ?>>Publié</option>
+                                        <option value="archive" <?php echo ($article && $article['statut'] === 'archive') ? 'selected' : ''; ?>>Archivé</option>
                                     </select>
                                 </div>
                             </div>
@@ -416,6 +543,167 @@ if ($article) {
                 .replace(/[\s]+/g, '-')
                 .replace(/[\-]+/g, '-');
         }
+
+        // Image upload & management
+        const uploadZone = document.getElementById('uploadZone');
+        const imageFiles = document.getElementById('imageFiles');
+        let newImages = [];
+        let deletedImages = [];
+
+        uploadZone?.addEventListener('click', () => imageFiles.click());
+        uploadZone?.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadZone.style.borderColor = '#007bff';
+            uploadZone.style.backgroundColor = '#f0f7ff';
+        });
+        uploadZone?.addEventListener('dragleave', () => {
+            uploadZone.style.borderColor = '#ddd';
+            uploadZone.style.backgroundColor = '';
+        });
+        uploadZone?.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadZone.style.borderColor = '#ddd';
+            uploadZone.style.backgroundColor = '';
+            imageFiles.files = e.dataTransfer.files;
+            handleImageSelect();
+        });
+
+        imageFiles?.addEventListener('change', handleImageSelect);
+
+        function handleImageSelect() {
+            const files = Array.from(imageFiles.files);
+            const imagesList = document.getElementById('imagesList') || createImagesList();
+
+            files.forEach((file, idx) => {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const div = document.createElement('div');
+                    div.className = 'image-item new-image';
+                    div.draggable = true;
+                    div.innerHTML = `
+                        <div class="image-preview">
+                            <img src="${e.target.result}" alt="">
+                        </div>
+                        <div class="image-info">
+                            <input type="text" class="form-input image-alt" placeholder="Texte alt..." style="font-size:12px; padding:5px;">
+                        </div>
+                        <div class="image-actions">
+                            <button type="button" class="btn btn-danger btn-sm" onclick="this.closest('.image-item').remove()">
+                                <i class="fas fa-trash"></i> Supprimer
+                            </button>
+                        </div>
+                    `;
+                    imagesList.appendChild(div);
+                    setupDragListeners(div);
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        function createImagesList() {
+            const formRow = document.createElement('div');
+            formRow.className = 'form-row';
+            const formGroup = document.createElement('div');
+            formGroup.className = 'form-group';
+            const label = document.createElement('label');
+            label.className = 'form-label';
+            label.textContent = 'Vos images';
+            const list = document.createElement('div');
+            list.id = 'imagesList';
+            list.className = 'images-list';
+            formGroup.appendChild(label);
+            formGroup.appendChild(list);
+            formRow.appendChild(formGroup);
+            uploadZone.parentNode.parentNode.insertAdjacentElement('afterend', formRow);
+            return list;
+        }
+
+        const imagesList = document.getElementById('imagesList');
+        if (imagesList) {
+            const items = imagesList.querySelectorAll('.image-item');
+            items.forEach(item => setupDragListeners(item));
+        }
+
+        function setupDragListeners(item) {
+            item.addEventListener('dragstart', (e) => {
+                item.style.opacity = '0.5';
+                e.dataTransfer.effectAllowed = 'move';
+                e.dataTransfer.setData('text/html', item.innerHTML);
+            });
+            item.addEventListener('dragend', (e) => {
+                item.style.opacity = '1';
+                updateImageOrders();
+            });
+            item.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                e.dataTransfer.dropEffect = 'move';
+                if (item !== e.target.closest('.image-item')) {
+                    item.style.borderTop = '3px solid #007bff';
+                }
+            });
+            item.addEventListener('dragleave', () => {
+                item.style.borderTop = '';
+            });
+            item.addEventListener('drop', (e) => {
+                e.preventDefault();
+                item.style.borderTop = '';
+                const dragged = document.querySelector('.image-item[style*="opacity"]') || e.target.closest('.image-item');
+                if (dragged && dragged !== item) {
+                    const parent = item.parentNode;
+                    if (parent.contains(dragged)) {
+                        if (dragged.compareDocumentPosition(item) & Node.DOCUMENT_POSITION_FOLLOWING) {
+                            item.parentNode.insertBefore(dragged, item);
+                        } else {
+                            item.parentNode.insertBefore(dragged, item.nextSibling);
+                        }
+                        updateImageOrders();
+                    }
+                }
+            });
+        }
+
+        function updateImageOrders() {
+            const orders = {};
+            const imagesList = document.getElementById('imagesList');
+            if (!imagesList) return;
+
+            imagesList.querySelectorAll('.image-item').forEach((item, idx) => {
+                const imgId = item.dataset.imageId;
+                if (imgId) orders[imgId] = idx;
+            });
+            document.getElementById('imageOrders').value = JSON.stringify(orders);
+        }
+
+        function deleteImage(imageId) {
+            if (!confirm('Supprimer cette image ?')) return;
+            const item = document.querySelector(`[data-image-id="${imageId}"]`);
+            if (item) {
+                deletedImages.push(imageId);
+                item.remove();
+                updateImageOrders();
+            }
+        }
+
+        // Update on form submit
+        document.querySelector('form').addEventListener('submit', () => {
+            updateImageOrders();
+            document.getElementById('deletedImages').value = JSON.stringify(deletedImages);
+            // Collect alt texts for new images
+            const newImageAlts = [];
+            document.querySelectorAll('.new-image .image-alt').forEach(input => {
+                newImageAlts.push(input.value);
+            });
+            if (newImageAlts.length > 0) {
+                // Add hidden inputs for alt texts
+                newImageAlts.forEach((alt, idx) => {
+                    const input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = 'image_alt[]';
+                    input.value = alt;
+                    document.querySelector('form').appendChild(input);
+                });
+            }
+        });
     </script>
 </body>
 </html>

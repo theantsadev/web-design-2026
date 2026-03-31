@@ -68,9 +68,9 @@ Une nouvelle escalade diplomatique menace les nÃ©gociations. Les inspecteurs d
   - [x] Éditeur TinyMCE pour le contenu
   - [x] Select Catégorie
   - [x] Checkboxes Tags
-  - [ ] Upload images multiple
-  - [ ] Drag & drop pour l'ordre des images
-  - [ ] Marquer une image comme principale
+  - [x] Upload images multiple
+  - [x] Drag & drop pour l'ordre des images
+  - [x] Marquer une image comme principale
   - [x] Champ SEO Title (max 60 car.)
   - [x] Champ Meta Description (max 160 car.)
   - [x] Select Statut (brouillon/publié/archivé)

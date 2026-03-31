@@ -155,10 +155,122 @@
     overflow: hidden;
 }
 
+/* Upload Zone */
+.upload-zone {
+    border: 2px dashed #ddd;
+    border-radius: var(--radius);
+    padding: 2rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: #fafafa;
+}
+
+.upload-zone:hover {
+    border-color: var(--primary);
+    background: #f0f7ff;
+}
+
+.upload-zone i {
+    font-size: 2.5rem;
+    color: var(--primary);
+    margin-bottom: 0.5rem;
+}
+
+.upload-zone p {
+    margin: 0.5rem 0 0 0;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+/* Images List */
+.images-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 1rem;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: var(--radius);
+}
+
+.image-item {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: var(--radius);
+    overflow: hidden;
+    transition: all 0.2s;
+    cursor: grab;
+}
+
+.image-item:hover {
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.image-item:active {
+    cursor: grabbing;
+}
+
+.image-preview {
+    position: relative;
+    width: 100%;
+    padding-top: 100%;
+    background: #f0f0f0;
+    overflow: hidden;
+}
+
+.image-preview img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.badge-main {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: var(--success);
+    color: #fff;
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 4px 8px;
+    border-radius: 4px;
+}
+
+.image-info {
+    padding: 0.75rem;
+}
+
+.image-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 0.75rem;
+    border-top: 1px solid #e9ecef;
+    font-size: 0.85rem;
+}
+
+.radio-main {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    cursor: pointer;
+    padding: 0.25rem;
+}
+
+.radio-main input[type="radio"] {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
     .form-row.two-columns,
     .form-row.three-columns { grid-template-columns: 1fr; }
     .form-actions { flex-direction: column; }
     .checkbox-grid { grid-template-columns: 1fr; }
+    .images-list { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
 }
