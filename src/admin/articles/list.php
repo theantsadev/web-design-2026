@@ -63,318 +63,215 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Articles - Admin</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f5f5f5;
-            color: #333;
-        }
-
-        .navbar {
-            background: #2c3e50;
-            color: white;
-            padding: 1rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .navbar h1 {
-            font-size: 1.5rem;
-        }
-
-        .navbar a {
-            color: white;
-            text-decoration: none;
-            margin-left: 2rem;
-            padding: 0.5rem 1rem;
-            border-radius: 4px;
-            transition: background 0.3s;
-        }
-
-        .navbar a:hover {
-            background: #34495e;
-        }
-
-        .sidebar {
-            width: 250px;
-            background: #34495e;
-            color: white;
-            position: fixed;
-            top: 60px;
-            left: 0;
-            height: calc(100vh - 60px);
-            overflow-y: auto;
-        }
-
-        .sidebar a {
-            display: block;
-            color: white;
-            padding: 1rem;
-            text-decoration: none;
-            transition: background 0.3s;
-            font-size: 0.95rem;
-        }
-
-        .sidebar a:hover,
-        .sidebar a.active {
-            background: #2c3e50;
-        }
-
-        .sidebar-title {
-            padding: 1rem;
-            font-weight: bold;
-            background: #2c3e50;
-            text-transform: uppercase;
-            font-size: 0.8rem;
-            letter-spacing: 1px;
-        }
-
-        .main-content {
-            margin-left: 250px;
-            margin-top: 60px;
-            padding: 2rem;
-        }
-
-        .page-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
-        }
-
-        .page-header h1 {
-            font-size: 2rem;
-        }
-
-        .btn {
-            padding: 0.75rem 1.5rem;
-            background: #3498db;
-            color: white;
-            text-decoration: none;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background 0.3s;
-            font-size: 0.95rem;
-        }
-
-        .btn:hover {
-            background: #2980b9;
-        }
-
-        .btn-danger {
-            background: #e74c3c;
-        }
-
-        .btn-danger:hover {
-            background: #c0392b;
-        }
-
-        .table-container {
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            overflow: hidden;
-        }
-
-        .articles-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .articles-table th {
-            background: #f9f9f9;
-            padding: 1rem;
-            text-align: left;
-            font-weight: bold;
-            border-bottom: 2px solid #eee;
-        }
-
-        .articles-table td {
-            padding: 1rem;
-            border-bottom: 1px solid #eee;
-        }
-
-        .articles-table tr:hover {
-            background: #f9f9f9;
-        }
-
-        .badge {
-            display: inline-block;
-            padding: 0.25rem 0.7rem;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: bold;
-        }
-
-        .badge-publié {
-            background: #d4edda;
-            color: #155724;
-        }
-
-        .badge-brouillon {
-            background: #fff3cd;
-            color: #856404;
-        }
-
-        .badge-archivé {
-            background: #f8d7da;
-            color: #721c24;
-        }
-
-        .actions {
-            display: flex;
-            gap: 0.5rem;
-        }
-
-        .action-btn {
-            padding: 0.5rem 0.8rem;
-            text-decoration: none;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 0.8rem;
-            background: #95a5a6;
-            color: white;
-        }
-
-        .action-btn:hover {
-            background: #7f8c8d;
-        }
-
-        .action-btn-danger {
-            background: #e74c3c;
-        }
-
-        .action-btn-danger:hover {
-            background: #c0392b;
-        }
-
-        .no-data {
-            text-align: center;
-            padding: 3rem;
-            color: #999;
-        }
-
-        @media (max-width: 768px) {
-            .sidebar {
-                width: 100%;
-                position: static;
-                height: auto;
-            }
-
-            .main-content {
-                margin-left: 0;
-                margin-top: 0;
-            }
-
-            .page-header {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-
-            .articles-table {
-                font-size: 0.9rem;
-            }
-
-            .articles-table td, .articles-table th {
-                padding: 0.5rem;
-            }
-        }
-    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/admin/assets/modern-admin.css">
+    <link rel="stylesheet" href="/admin/assets/tables.css">
 </head>
 <body>
-    <div class="navbar">
-        <h1>📄 Articles</h1>
-        <div>
-            <a href="/admin/dashboard/">Dashboard</a>
-            <a href="/admin/logout">Déconnexion</a>
-        </div>
-    </div>
+    <div class="admin-layout">
+        <!-- Navbar -->
+        <nav class="navbar">
+            <div class="navbar-brand">
+                <i class="fas fa-newspaper"></i>
+                Articles
+            </div>
+            <div class="navbar-user">
+                <a href="/admin/dashboard/" class="btn btn-secondary btn-sm">
+                    <i class="fas fa-chart-pie"></i>
+                    Dashboard
+                </a>
+                <a href="/admin/logout" class="btn btn-secondary btn-sm">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Déconnexion
+                </a>
+            </div>
+        </nav>
 
-    <div class="sidebar">
-        <div class="sidebar-title">● Gestion</div>
-        <a href="/admin/dashboard/">Dashboard</a>
-        <a href="/admin/articles/" class="active">Articles</a>
-        <a href="/admin/categories/">Catégories</a>
-        <a href="/admin/tags/">Tags</a>
-        <a href="/admin/auteurs/">Auteurs</a>
-    </div>
-
-    <div class="main-content">
-        <div class="page-header">
-            <h1>Articles</h1>
-            <a href="/admin/articles/new" class="btn">+ Créer un article</a>
-        </div>
-
-        <div class="table-container">
-            <?php if (!empty($articles)): ?>
-                <table class="articles-table">
-                    <thead>
-                        <tr>
-                            <th>Titre</th>
-                            <th>Catégorie</th>
-                            <th>Auteur</th>
-                            <th>Statut</th>
-                            <th>Date publication</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php foreach ($articles as $article): ?>
-                            <tr>
-                                <td>
-                                    <strong><?php echo escape($article['titre']); ?></strong><br>
-                                    <small style="color: #999;">/<span style="color: #666;"><?php echo escape($article['slug']); ?></span></small>
-                                </td>
-                                <td><?php echo escape($article['categorie_nom'] ?? '-'); ?></td>
-                                <td><?php echo escape($article['auteur_nom'] ?? '-'); ?></td>
-                                <td>
-                                    <span class="badge badge-<?php echo $article['statut']; ?>">
-                                        <?php echo ucfirst($article['statut']); ?>
-                                    </span>
-                                </td>
-                                <td><?php echo formatDate($article['date_publication'], 'd/m/Y'); ?></td>
-                                <td>
-                                    <div class="actions">
-                                        <a href="/admin/articles/edit/<?php echo $article['id']; ?>" class="action-btn">Éditer</a>
-                                        <form method="POST" style="display: inline;" onsubmit="return confirm('Êtes-vous sûr?')">
-                                            <input type="hidden" name="delete_id" value="<?php echo $article['id']; ?>">
-                                            <button type="submit" class="action-btn action-btn-danger">Supprimer</button>
-                                        </form>
-                                    </div>
-                                </td>
-                            </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
-
-                <?php if ($pages > 1): ?>
-                    <div style="padding: 1.5rem; text-align: center; border-top: 1px solid #eee;">
-                        <?php for ($p = 1; $p <= $pages; $p++): ?>
-                            <?php if ($p === $page): ?>
-                                <strong><?php echo $p; ?></strong>
-                            <?php else: ?>
-                                <a href="/admin/articles/?page=<?php echo $p; ?>"><?php echo $p; ?></a>
-                            <?php endif; ?>
-                            <?php if ($p < $pages) echo ' | '; ?>
-                        <?php endfor; ?>
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <nav class="sidebar-nav">
+                <div class="nav-group">
+                    <div class="nav-group-title">Menu</div>
+                    <div class="nav-item">
+                        <a href="/admin/dashboard/" class="nav-link">
+                            <span class="nav-icon"><i class="fas fa-chart-pie"></i></span>
+                            <span class="nav-text">Dashboard</span>
+                        </a>
                     </div>
-                <?php endif; ?>
+                    <div class="nav-item">
+                        <a href="/admin/articles/" class="nav-link active">
+                            <span class="nav-icon"><i class="fas fa-newspaper"></i></span>
+                            <span class="nav-text">Articles</span>
+                        </a>
+                    </div>
+                    <div class="nav-item">
+                        <a href="/admin/categories/" class="nav-link">
+                            <span class="nav-icon"><i class="fas fa-folder"></i></span>
+                            <span class="nav-text">Catégories</span>
+                        </a>
+                    </div>
+                    <div class="nav-item">
+                        <a href="/admin/tags/" class="nav-link">
+                            <span class="nav-icon"><i class="fas fa-tags"></i></span>
+                            <span class="nav-text">Tags</span>
+                        </a>
+                    </div>
+                    <div class="nav-item">
+                        <a href="/admin/auteurs/" class="nav-link">
+                            <span class="nav-icon"><i class="fas fa-users"></i></span>
+                            <span class="nav-text">Auteurs</span>
+                        </a>
+                    </div>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="page-header">
+                <div>
+                    <h1 class="page-title"><i class="fas fa-newspaper"></i> Articles</h1>
+                    <p class="page-subtitle">Gérez vos articles de presse</p>
+                </div>
+                <a href="/admin/articles/new" class="btn">
+                    <i class="fas fa-plus"></i>
+                    Nouvel Article
+                </a>
+            </div>
+
+            <?php if (!empty($articles)): ?>
+                <div class="data-table">
+                    <div class="data-table-header">
+                        <div class="data-table-title">
+                            <i class="fas fa-list"></i>
+                            Liste des Articles
+                            <span class="badge badge-primary"><?php echo $total; ?></span>
+                        </div>
+                        <div class="data-table-search">
+                            <i class="fas fa-search"></i>
+                            <input type="text" placeholder="Rechercher..." id="searchInput">
+                        </div>
+                    </div>
+
+                    <div class="table-wrapper">
+                        <table class="enhanced-table">
+                            <thead>
+                                <tr>
+                                    <th>Article</th>
+                                    <th>Catégorie</th>
+                                    <th>Auteur</th>
+                                    <th>Statut</th>
+                                    <th>Date</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php foreach ($articles as $article): ?>
+                                    <tr>
+                                        <td data-label="Article">
+                                            <div class="table-cell-title"><?php echo escape($article['titre']); ?></div>
+                                            <div class="table-cell-subtitle">
+                                                <i class="fas fa-link"></i>
+                                                <?php echo escape($article['slug']); ?>
+                                            </div>
+                                        </td>
+                                        <td data-label="Catégorie">
+                                            <?php if ($article['categorie_nom']): ?>
+                                                <span class="badge badge-secondary"><?php echo escape($article['categorie_nom']); ?></span>
+                                            <?php else: ?>
+                                                <span class="text-muted">-</span>
+                                            <?php endif; ?>
+                                        </td>
+                                        <td data-label="Auteur">
+                                            <?php if ($article['auteur_nom']): ?>
+                                                <div class="table-cell-avatar">
+                                                    <div class="table-avatar"><?php echo strtoupper(substr($article['auteur_nom'], 0, 2)); ?></div>
+                                                    <span><?php echo escape($article['auteur_nom']); ?></span>
+                                                </div>
+                                            <?php else: ?>
+                                                <span class="text-muted">-</span>
+                                            <?php endif; ?>
+                                        </td>
+                                        <td data-label="Statut">
+                                            <span class="badge badge-<?php echo $article['statut'] === 'publié' ? 'success' : ($article['statut'] === 'brouillon' ? 'warning' : 'danger'); ?>">
+                                                <?php echo ucfirst($article['statut']); ?>
+                                            </span>
+                                        </td>
+                                        <td data-label="Date">
+                                            <?php echo formatDate($article['date_publication'], 'd/m/Y'); ?>
+                                        </td>
+                                        <td data-label="Actions">
+                                            <div class="table-cell-actions">
+                                                <a href="/admin/articles/edit/<?php echo $article['id']; ?>" class="action-btn edit" title="Modifier">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                                <form method="POST" style="display: inline;" onsubmit="return confirm('Êtes-vous sûr?')">
+                                                    <input type="hidden" name="delete_id" value="<?php echo $article['id']; ?>">
+                                                    <button type="submit" class="action-btn delete" title="Supprimer">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <?php if ($pages > 1): ?>
+                        <div class="table-pagination">
+                            <div class="pagination-info">
+                                Page <?php echo $page; ?> sur <?php echo $pages; ?> (<?php echo $total; ?> articles)
+                            </div>
+                            <div class="pagination-controls">
+                                <?php if ($page > 1): ?>
+                                    <a href="/admin/articles/?page=<?php echo $page - 1; ?>" class="pagination-btn">
+                                        <i class="fas fa-chevron-left"></i>
+                                    </a>
+                                <?php endif; ?>
+
+                                <?php for ($p = max(1, $page - 2); $p <= min($pages, $page + 2); $p++): ?>
+                                    <a href="/admin/articles/?page=<?php echo $p; ?>" class="pagination-btn <?php echo $p === $page ? 'active' : ''; ?>">
+                                        <?php echo $p; ?>
+                                    </a>
+                                <?php endfor; ?>
+
+                                <?php if ($page < $pages): ?>
+                                    <a href="/admin/articles/?page=<?php echo $page + 1; ?>" class="pagination-btn">
+                                        <i class="fas fa-chevron-right"></i>
+                                    </a>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                    <?php endif; ?>
+                </div>
             <?php else: ?>
-                <div class="no-data">
-                    <p>Aucun article pour le moment.</p>
-                    <p><a href="/admin/articles/new" class="btn" style="display: inline-block; margin-top: 1rem;">+ Créer un article</a></p>
+                <div class="data-table">
+                    <div class="table-empty">
+                        <div class="table-empty-icon"><i class="fas fa-newspaper"></i></div>
+                        <div class="table-empty-title">Aucun article</div>
+                        <div class="table-empty-description">Créez votre premier article pour commencer.</div>
+                        <a href="/admin/articles/new" class="btn">
+                            <i class="fas fa-plus"></i>
+                            Créer un article
+                        </a>
+                    </div>
                 </div>
             <?php endif; ?>
-        </div>
+        </main>
     </div>
+
+    <script>
+        // Simple recherche
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            const filter = e.target.value.toLowerCase();
+            const rows = document.querySelectorAll('.enhanced-table tbody tr');
+            rows.forEach(row => {
+                row.style.display = row.textContent.toLowerCase().includes(filter) ? '' : 'none';
+            });
+        });
+    </script>
 </body>
 </html>

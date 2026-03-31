@@ -32,13 +32,13 @@ $stats['auteurs'] = $stmt->fetch()['total'];
 
 // Derniers articles
 $stmt = $pdo->query('
-    SELECT a.id, a.titre, a.statut, a.date_publication, aut.nom
+    SELECT a.id, a.titre, a.statut, a.date_publication, a.created_at, aut.nom
     FROM article a
     LEFT JOIN auteur aut ON a.auteur_id = aut.id
     ORDER BY a.created_at DESC
     LIMIT 5
 ');
-$lastArticles = $stmt->fetchAll();
+$recentArticles = $stmt->fetchAll();
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -46,272 +46,191 @@ $lastArticles = $stmt->fetchAll();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - Admin</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f5f5f5;
-            color: #333;
-        }
-
-        .navbar {
-            background: #2c3e50;
-            color: white;
-            padding: 1rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .navbar h1 {
-            font-size: 1.5rem;
-        }
-
-        .navbar a {
-            color: white;
-            text-decoration: none;
-            margin-left: 2rem;
-            padding: 0.5rem 1rem;
-            border-radius: 4px;
-            transition: background 0.3s;
-        }
-
-        .navbar a:hover {
-            background: #34495e;
-        }
-
-        .sidebar {
-            width: 250px;
-            background: #34495e;
-            color: white;
-            position: fixed;
-            top: 60px;
-            left: 0;
-            height: calc(100vh - 60px);
-            overflow-y: auto;
-        }
-
-        .sidebar a {
-            display: block;
-            color: white;
-            padding: 1rem;
-            text-decoration: none;
-            transition: background 0.3s;
-            font-size: 0.95rem;
-        }
-
-        .sidebar a:hover {
-            background: #2c3e50;
-        }
-
-        .sidebar-title {
-            padding: 1rem;
-            font-weight: bold;
-            background: #2c3e50;
-            text-transform: uppercase;
-            font-size: 0.8rem;
-            letter-spacing: 1px;
-        }
-
-        .main-content {
-            margin-left: 250px;
-            margin-top: 60px;
-            padding: 2rem;
-        }
-
-        .page-title {
-            font-size: 2rem;
-            margin-bottom: 2rem;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 3rem;
-        }
-
-        .stat-card {
-            background: white;
-            padding: 1.5rem;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            text-align: center;
-        }
-
-        .stat-card h3 {
-            color: #666;
-            font-size: 0.9rem;
-            margin-bottom: 0.5rem;
-            text-transform: uppercase;
-        }
-
-        .stat-card .number {
-            font-size: 2.5rem;
-            font-weight: bold;
-            color: #2c3e50;
-        }
-
-        .recent-articles {
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            overflow: hidden;
-        }
-
-        .recent-articles h2 {
-            padding: 1.5rem;
-            background: #f9f9f9;
-            border-bottom: 1px solid #eee;
-            font-size: 1.2rem;
-        }
-
-        .articles-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .articles-table th {
-            background: #f9f9f9;
-            padding: 1rem;
-            text-align: left;
-            font-weight: bold;
-            border-bottom: 2px solid #eee;
-        }
-
-        .articles-table td {
-            padding: 1rem;
-            border-bottom: 1px solid #eee;
-        }
-
-        .articles-table tr:hover {
-            background: #f9f9f9;
-        }
-
-        .badge {
-            display: inline-block;
-            padding: 0.25rem 0.7rem;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: bold;
-        }
-
-        .badge-publié {
-            background: #d4edda;
-            color: #155724;
-        }
-
-        .badge-brouillon {
-            background: #fff3cd;
-            color: #856404;
-        }
-
-        .badge-archivé {
-            background: #f8d7da;
-            color: #721c24;
-        }
-
-        @media (max-width: 768px) {
-            .sidebar {
-                width: 100%;
-                position: static;
-                height: auto;
-            }
-
-            .main-content {
-                margin-left: 0;
-                margin-top: 0;
-            }
-
-            .stats-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .navbar {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-
-            .navbar a {
-                margin-left: 0;
-            }
-        }
-    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/admin/assets/modern-admin.css">
+    <link rel="stylesheet" href="/admin/assets/dashboard.css">
 </head>
 <body>
-    <div class="navbar">
-        <h1>📊 Admin</h1>
-        <div>
-            <span>Bienvenue, <strong><?php echo escape($user['login']); ?></strong></span>
-            <a href="/admin/logout">Déconnexion</a>
-        </div>
-    </div>
+    <div class="admin-layout">
+        <!-- Navbar -->
+        <nav class="navbar">
+            <div class="navbar-brand">
+                <i class="fas fa-tachometer-alt"></i>
+                Dashboard
+            </div>
+            <div class="navbar-user">
+                <div class="user-info">
+                    <div class="name">Bienvenue, <?php echo escape($user['login']); ?></div>
+                    <div class="role">Administrateur</div>
+                </div>
+                <a href="/admin/logout" class="btn btn-secondary btn-sm">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Déconnexion
+                </a>
+            </div>
+        </nav>
 
-    <div class="sidebar">
-        <div class="sidebar-title">● Gestion</div>
-        <a href="/admin/dashboard/">Dashboard</a>
-        <a href="/admin/articles/">Articles</a>
-        <a href="/admin/categories/">Catégories</a>
-        <a href="/admin/tags/">Tags</a>
-        <a href="/admin/auteurs/">Auteurs</a>
-    </div>
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <nav class="sidebar-nav">
+                <div class="nav-group">
+                    <div class="nav-group-title">Menu</div>
+                    <div class="nav-item">
+                        <a href="/admin/dashboard/" class="nav-link active">
+                            <span class="nav-icon"><i class="fas fa-chart-pie"></i></span>
+                            <span class="nav-text">Dashboard</span>
+                        </a>
+                    </div>
+                    <div class="nav-item">
+                        <a href="/admin/articles/" class="nav-link">
+                            <span class="nav-icon"><i class="fas fa-newspaper"></i></span>
+                            <span class="nav-text">Articles</span>
+                            <span class="nav-badge"><?php echo $stats['articles']; ?></span>
+                        </a>
+                    </div>
+                    <div class="nav-item">
+                        <a href="/admin/categories/" class="nav-link">
+                            <span class="nav-icon"><i class="fas fa-folder"></i></span>
+                            <span class="nav-text">Catégories</span>
+                            <span class="nav-badge"><?php echo $stats['categories']; ?></span>
+                        </a>
+                    </div>
+                    <div class="nav-item">
+                        <a href="/admin/tags/" class="nav-link">
+                            <span class="nav-icon"><i class="fas fa-tags"></i></span>
+                            <span class="nav-text">Tags</span>
+                            <span class="nav-badge"><?php echo $stats['tags']; ?></span>
+                        </a>
+                    </div>
+                    <div class="nav-item">
+                        <a href="/admin/auteurs/" class="nav-link">
+                            <span class="nav-icon"><i class="fas fa-users"></i></span>
+                            <span class="nav-text">Auteurs</span>
+                            <span class="nav-badge"><?php echo $stats['auteurs']; ?></span>
+                        </a>
+                    </div>
+                </div>
+                <div class="nav-group">
+                    <div class="nav-group-title">Site</div>
+                    <div class="nav-item">
+                        <a href="/" target="_blank" class="nav-link">
+                            <span class="nav-icon"><i class="fas fa-external-link-alt"></i></span>
+                            <span class="nav-text">Voir le site</span>
+                        </a>
+                    </div>
+                </div>
+            </nav>
+        </aside>
 
-    <div class="main-content">
-        <h1 class="page-title">Dashboard</h1>
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="page-header">
+                <div>
+                    <h1 class="page-title"><i class="fas fa-chart-line"></i> Tableau de bord</h1>
+                    <p class="page-subtitle">Vue d'ensemble de votre site</p>
+                </div>
+            </div>
 
-        <div class="stats-grid">
-            <div class="stat-card">
-                <h3>Articles</h3>
-                <div class="number"><?php echo $stats['articles']; ?></div>
+            <!-- Stats -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon articles"><i class="fas fa-newspaper"></i></div>
+                    <div class="stat-content">
+                        <div class="stat-number"><?php echo $stats['articles']; ?></div>
+                        <div class="stat-label">Articles</div>
+                        <div class="stat-info">Total des articles</div>
+                    </div>
+                    <a href="/admin/articles/" class="stat-action"><i class="fas fa-arrow-right"></i></a>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon categories"><i class="fas fa-folder"></i></div>
+                    <div class="stat-content">
+                        <div class="stat-number"><?php echo $stats['categories']; ?></div>
+                        <div class="stat-label">Catégories</div>
+                        <div class="stat-info">Thématiques</div>
+                    </div>
+                    <a href="/admin/categories/" class="stat-action"><i class="fas fa-arrow-right"></i></a>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon tags"><i class="fas fa-tags"></i></div>
+                    <div class="stat-content">
+                        <div class="stat-number"><?php echo $stats['tags']; ?></div>
+                        <div class="stat-label">Tags</div>
+                        <div class="stat-info">Mots-clés</div>
+                    </div>
+                    <a href="/admin/tags/" class="stat-action"><i class="fas fa-arrow-right"></i></a>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon auteurs"><i class="fas fa-users"></i></div>
+                    <div class="stat-content">
+                        <div class="stat-number"><?php echo $stats['auteurs']; ?></div>
+                        <div class="stat-label">Auteurs</div>
+                        <div class="stat-info">Rédacteurs</div>
+                    </div>
+                    <a href="/admin/auteurs/" class="stat-action"><i class="fas fa-arrow-right"></i></a>
+                </div>
             </div>
-            <div class="stat-card">
-                <h3>Catégories</h3>
-                <div class="number"><?php echo $stats['categories']; ?></div>
-            </div>
-            <div class="stat-card">
-                <h3>Tags</h3>
-                <div class="number"><?php echo $stats['tags']; ?></div>
-            </div>
-            <div class="stat-card">
-                <h3>Auteurs</h3>
-                <div class="number"><?php echo $stats['auteurs']; ?></div>
-            </div>
-        </div>
 
-        <?php if (!empty($lastArticles)): ?>
-            <div class="recent-articles">
-                <h2>Derniers articles</h2>
-                <table class="articles-table">
-                    <thead>
-                        <tr>
-                            <th>Titre</th>
-                            <th>Auteur</th>
-                            <th>Statut</th>
-                            <th>Date</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php foreach ($lastArticles as $article): ?>
-                            <tr>
-                                <td><strong><?php echo escape($article['titre']); ?></strong></td>
-                                <td><?php echo escape($article['nom'] ?? 'N/A'); ?></td>
-                                <td>
-                                    <span class="badge badge-<?php echo $article['statut']; ?>">
-                                        <?php echo ucfirst($article['statut']); ?>
-                                    </span>
-                                </td>
-                                <td><?php echo formatDate($article['date_publication'], 'd/m/Y'); ?></td>
-                            </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
+            <!-- Sections -->
+            <div class="dashboard-sections">
+                <div class="section">
+                    <div class="section-header">
+                        <h2><i class="fas fa-bolt"></i> Actions rapides</h2>
+                    </div>
+                    <div class="quick-actions">
+                        <a href="/admin/articles/new" class="quick-action-btn primary">
+                            <i class="fas fa-plus"></i>
+                            <span>Nouvel article</span>
+                        </a>
+                        <a href="/admin/categories/new" class="quick-action-btn">
+                            <i class="fas fa-folder-plus"></i>
+                            <span>Catégorie</span>
+                        </a>
+                        <a href="/admin/tags/new" class="quick-action-btn">
+                            <i class="fas fa-tag"></i>
+                            <span>Tag</span>
+                        </a>
+                        <a href="/admin/auteurs/new" class="quick-action-btn">
+                            <i class="fas fa-user-plus"></i>
+                            <span>Auteur</span>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="section-header">
+                        <h2><i class="fas fa-clock"></i> Articles récents</h2>
+                    </div>
+                    <div class="recent-articles">
+                        <?php if (!empty($recentArticles)): ?>
+                            <?php foreach ($recentArticles as $article): ?>
+                                <div class="recent-article">
+                                    <div class="article-info">
+                                        <h4><?php echo escape($article['titre']); ?></h4>
+                                        <div class="article-meta">
+                                            <span class="badge badge-<?php echo $article['statut'] === 'publié' ? 'success' : 'warning'; ?>">
+                                                <?php echo ucfirst($article['statut']); ?>
+                                            </span>
+                                            <span class="article-date"><?php echo formatDate($article['created_at'], 'd/m/Y'); ?></span>
+                                        </div>
+                                    </div>
+                                    <a href="/admin/articles/edit/<?php echo $article['id']; ?>" class="article-action">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                </div>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <div class="empty-state">
+                                <i class="fas fa-newspaper"></i>
+                                <p>Aucun article récent</p>
+                                <a href="/admin/articles/new" class="btn btn-primary btn-sm">Créer un article</a>
+                            </div>
+                        <?php endif; ?>
+                    </div>
+                </div>
             </div>
-        <?php endif; ?>
+        </main>
     </div>
 </body>
 </html>
